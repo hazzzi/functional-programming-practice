@@ -89,3 +89,54 @@ function update_shipping_icons(cart) {
   }
 }
 ```
+
+# 계산 분류하기
+
+계산에도 동작과 비즈니스 규칙을 그룹화해서 나눈다.
+
+## 원칙: 설계는 엉켜있는 코드를 푸는 것이다
+
+작을수록 재사용하기 쉽고, 유지보수하기 쉽고, 테스트하기 쉽다.
+
+## add_item()을 분리해 더 좋은 설계 만들기
+
+계산에서도 나눌 수 있는 부분을 살펴보고 구조를 기준으로 나눈다. 
+
+1. item 구조만 알 수 있게 분리
+```javascript
+function make_cart_item(name, price) {
+  return { name: name, price: price }
+}
+```
+
+2. cart 구조만 알 수 있도록 분리
+```javascript
+function add_item(cart, item) {
+  var new_cart = cart.slice();
+  new_cart.push(item);
+  return new_cart;
+}
+
+add_item(shopping_cart, make_cart_item("shoes", 3.45));
+```
+
+## 카피-온-라이트 패턴을 빼내기
+
+`add_item` 함수의 구현이 어느 배열에나 사용할 수 있도록 일반적으로 변했음  
+함수의 이름과 인자의 이름은 현재 일반적이지 않기 때문에 바꿔보자
+
+```javascript
+function add_element_last(array, element) {
+  var new_array = array.slice();
+  new_array.push(element);
+  return new_array;
+}
+```
+이제 재사용할 수 있는 유틸리티 함수가 되었다.
+
+## 계산을 분류하기
+
+계산도 구조를 기준으로 나눌 수 있다. 기능과 비즈니스 규칙에는 차이가 존재한다.  
+기능은 일반적인 개념으로 동작하는 방식이 비슷할 수 있지만 비즈니스 규칙은 회사마다 운영방식이 다를 수 있는 특별한 규칙이라고 할 수 있다.
+
+비즈니스 규칙은 기능보다 더 빠르게 바뀐다.
