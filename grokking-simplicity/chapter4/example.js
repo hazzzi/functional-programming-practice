@@ -41,6 +41,6 @@ function add_item_to_cart(name, price) {
 
 function add_item(cart, name, price) {
   var new_cart = cart.slice();
-  new_cart.push({ name: name, price: price )}
+  new_cart.push({ name: name, price: price })
   return new_cart
 }
